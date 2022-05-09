@@ -2,9 +2,8 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    tags:
+      - 'v*.*.*'
 
 jobs:
 
@@ -14,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Set env
+      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
     - name: docker login
       env:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
@@ -21,7 +22,7 @@ jobs:
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag serverlesspolska/serverless-framework:v2.60
+      run: docker build . --file Dockerfile --tag cvphat/serverless-framework:${{env.RELEASE_VERSION}}
       
     - name: Docker Push
-      run: docker push serverlesspolska/serverless-framework:v2.60
+      run: docker push cvphat/serverless-framework:${{env.RELEASE_VERSION}}
