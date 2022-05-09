@@ -1,4 +1,4 @@
-FROM node:14.19.0
+FROM node:14.19-alpine3.14
 
 # Install Serverless Framework
 RUN npm install -g serverless@3.16.0
